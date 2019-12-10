@@ -1,25 +1,27 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
+import PropTypes from 'prop-types'
 
-export default class Circle extends Component {
-  render() {
-    const { xTranslate, yTranslate, color } = this.props
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            transform: [
-              { translateX: xTranslate ? xTranslate : 10 },
-              { translateY: yTranslate ? yTranslate : 10 },
-            ],
-            backgroundColor: color ? color : '#000',
-          },
-        ]}>
-        <View style={styles.innerCircle} />
-      </View>
-    )
-  }
+const Circle = ({ xTranslate, yTranslate, color }) => (
+  <View
+    style={[
+      styles.container,
+      {
+        transform: [
+          { translateX: xTranslate ? xTranslate : 10 },
+          { translateY: yTranslate ? yTranslate : 10 },
+        ],
+        backgroundColor: color ? color : '#000',
+      },
+    ]}>
+    <View style={styles.innerCircle} />
+  </View>
+)
+
+Circle.propTypes = {
+  xTranslate: PropTypes.number,
+  yTranslate: PropTypes.number,
+  color: PropTypes.string,
 }
 
 const styles = StyleSheet.create({
@@ -38,3 +40,5 @@ const styles = StyleSheet.create({
     borderRadius: 35,
   },
 })
+
+export default Circle

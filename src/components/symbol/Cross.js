@@ -1,42 +1,45 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
+import PropTypes from 'prop-types'
 
-export default class Cross extends Component {
-  render() {
-    const { xTranslate, yTranslate, color } = this.props
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            transform: [
-              { translateX: (xTranslate ? xTranslate : 10) + 35 },
-              { translateY: (yTranslate ? yTranslate : 10) - 12 },
-            ],
-          },
-        ]}>
-        <View
-          style={[
-            styles.line,
-            {
-              transform: [{ rotate: '45deg' }],
-              backgroundColor: color ? color : '#000',
-            },
-          ]}
-        />
-        <View
-          style={[
-            styles.line,
-            {
-              transform: [{ rotate: '135deg' }],
-              backgroundColor: color ? color : '#000',
-            },
-          ]}
-        />
-      </View>
-    )
-  }
+const Cross = ({ xTranslate, yTranslate, color }) => (
+  <View
+    style={[
+      styles.container,
+      {
+        transform: [
+          { translateX: (xTranslate ? xTranslate : 10) + 35 },
+          { translateY: (yTranslate ? yTranslate : 10) - 12 },
+        ],
+      },
+    ]}>
+    <View
+      style={[
+        styles.line,
+        {
+          transform: [{ rotate: '45deg' }],
+          backgroundColor: color ? color : '#000',
+        },
+      ]}
+    />
+    <View
+      style={[
+        styles.line,
+        {
+          transform: [{ rotate: '135deg' }],
+          backgroundColor: color ? color : '#000',
+        },
+      ]}
+    />
+  </View>
+)
+
+Cross.propTypes = {
+  xTranslate: PropTypes.number,
+  yTranslate: PropTypes.number,
+  color: PropTypes.string,
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -50,3 +53,5 @@ const styles = StyleSheet.create({
     height: 105,
   },
 })
+
+export default Cross
