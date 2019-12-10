@@ -1,18 +1,14 @@
 import React from 'react'
 import {
   View,
-  SafeAreaView,
-  StyleSheet
 } from 'react-native'
 
 import { Board } from './src/features'
 
 const App = () => (
-  <SafeAreaView>
-    <View style={{ alignItems: 'center' }}>
-      <Board />
-    </View>
-  </SafeAreaView>
+  <View style={{ alignItems: 'center' }}>
+    <Board />
+  </View>
 )
 
 export default App

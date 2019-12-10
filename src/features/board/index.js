@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { TouchableWithoutFeedback } from 'react-native'
 import { Circle, Cross, Board } from '../../components'
 
 
@@ -18,19 +17,17 @@ const CENTER_POINTS = [
 class BoardScreen extends Component {
   render() {
     return (
-      <TouchableWithoutFeedback onPress={(e) => this.boardClickHandler(e)}>
-        <Board>
-          <Circle
-            xTranslate={CENTER_POINTS[1].x}
-            yTranslate={CENTER_POINTS[1].y}
-            color='deepskyblue'
+      <Board>
+        <Circle
+          xTranslate={CENTER_POINTS[1].x}
+          yTranslate={CENTER_POINTS[1].y}
+          color='deepskyblue'
           />
-          <Cross
-            xTranslate={CENTER_POINTS[0].x}
-            yTranslate={CENTER_POINTS[0].y}
+        <Cross
+          xTranslate={CENTER_POINTS[0].x}
+          yTranslate={CENTER_POINTS[0].y}
           />
-        </Board>
-      </TouchableWithoutFeedback>
+      </Board>
     )
   }
 }
