@@ -1,6 +1,8 @@
 import { Circle, Cross } from './symbol'
+import Board from './board'
 
 export {
   Circle,
-  Cross
+  Cross,
+  Board
 }

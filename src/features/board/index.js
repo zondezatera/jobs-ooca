@@ -1,65 +1,38 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
-import { View, StyleSheet } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native'
+import { Circle, Cross, Board } from '../../components'
 
-class Board extends Component {
+
+const CENTER_POINTS = [
+  { x: 10, y: 10 },
+  { x: 113, y: 10 },
+  { x: 213, y: 10 },
+  { x: 10, y: 113 },
+  { x: 113, y: 113 },
+  { x: 213, y: 113 },
+  { x: 10, y: 213 },
+  { x: 113, y: 213 },
+  { x: 213, y: 213 },
+]
+
+class BoardScreen extends Component {
   render() {
     return (
-      <View style={styles.board}>
-        <View
-          style={styles.line}
-            />
-        <View
-          style={[styles.line, {
-            width: 3,
-            height: 306,
-            transform: [
-              { translateX: 200 }
-            ]
-          }]}
-            />
-        <View
-          style={[styles.line, {
-            width: 306,
-            height: 3,
-            transform: [
-              { translateY: 100 }
-            ]
-          }]}
-            />
-        <View
-          style={[styles.line, {
-            width: 306,
-            height: 3,
-            transform: [
-              { translateY: 200 }
-            ]
-          }]}
-            />
-      </View>
+      <TouchableWithoutFeedback onPress={(e) => this.boardClickHandler(e)}>
+        <Board>
+          <Circle
+            xTranslate={CENTER_POINTS[1].x}
+            yTranslate={CENTER_POINTS[1].y}
+            color='deepskyblue'
+          />
+          <Cross
+            xTranslate={CENTER_POINTS[0].x}
+            yTranslate={CENTER_POINTS[0].y}
+          />
+        </Board>
+      </TouchableWithoutFeedback>
     )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  board: {
-    width: 312,
-    height: 312,
-    borderWidth: 3,
-    borderColor: '#000',
-  },
-  line: {
-    position: 'absolute',
-    width: 3,
-    height: 306,
-    backgroundColor: '#000',
-    transform: [{ translateX: 100 }],
-  },
-})
-
-export default Board
+export default BoardScreen
