@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { View } from 'react-native'
 import { Circle, Cross, Board } from '../../components'
 
 
@@ -17,17 +18,19 @@ const CENTER_POINTS = [
 class BoardScreen extends Component {
   render() {
     return (
-      <Board>
-        <Circle
-          xTranslate={CENTER_POINTS[1].x}
-          yTranslate={CENTER_POINTS[1].y}
-          color='deepskyblue'
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Board>
+          <Circle
+            xTranslate={CENTER_POINTS[1].x}
+            yTranslate={CENTER_POINTS[1].y}
+            color='deepskyblue'
           />
-        <Cross
-          xTranslate={CENTER_POINTS[0].x}
-          yTranslate={CENTER_POINTS[0].y}
+          <Cross
+            xTranslate={CENTER_POINTS[0].x}
+            yTranslate={CENTER_POINTS[0].y}
           />
-      </Board>
+        </Board>
+      </View>
     )
   }
 }

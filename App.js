@@ -7,23 +7,15 @@ import 'react-native-gesture-handler'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 
-import { Board } from './src/features'
-
-// const App = () => (
-//   <View style={{ alignItems: 'center' }}>
-//     <Board />
-//   </View>
-// )
-const HomeScreen = () => (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text>Home Screen</Text>
-  </View>
-)
+import { HomeScreen, BoardScreen } from './src/screen'
 
 const App = createStackNavigator({
-  Home: {
-    screen: HomeScreen,
-  },
+  Home: HomeScreen,
+  Board: BoardScreen
+},
+{
+  initialRouteName: 'Home',
+  headerMode: 'none'
 })
 
 export default createAppContainer(App)
