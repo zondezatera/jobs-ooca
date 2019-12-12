@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import PropTypes from 'prop-types'
 
 const Board = (props) => (
-  <TouchableOpacity onPress={(e) => { console.log('TouchableWithoutFeedback - e', e.nativeEvent) }}>
+  <TouchableWithoutFeedback onPress={(e) => props.onDectectPosition(e.nativeEvent)}>
     <View style={styles.container}>
       <View style={[styles.line, { width: 3, height: 306, transform: [{ translateX: 100 }] }]} />
       <View style={[styles.line, { width: 3, height: 306, transform: [{ translateX: 200 }] }]} />
@@ -11,11 +11,11 @@ const Board = (props) => (
       <View style={[styles.line, { width: 306, height: 3, transform: [{ translateY: 200 }] }]} />
       {props.children}
     </View>
-  </TouchableOpacity>
+  </TouchableWithoutFeedback>
 )
 
 Board.propTypes = {
-  playerAction: PropTypes.func,
+  onDectectPosition: PropTypes.func,
   children: PropTypes.any
 }
 
