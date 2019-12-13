@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { View, Alert } from 'react-native'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
+import { Card, ButtonGroup, Button } from 'react-native-elements'
 import { Circle, Cross, Board } from '../../components'
 import {
+  GAME_MODE,
   POSITION_SLOT,
   CENTER_POINTS,
   AREAS,
@@ -13,22 +16,16 @@ class BoardScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isVisible: true,
       playerOne: [],
       playerTwo: [],
       isPlayerOne: true,
-      round: 0,
       result: -1
     }
   }
 
   handledDetectPositionSlot(e) {
-    const {
-      isPlayerOne,
-      playerOne,
-      playerTwo,
-      historyLog,
-      round
-    } = this.state
+    const { isPlayerOne, playerOne, playerTwo } = this.state
     const playerOneData = playerOne
     const playerTwoData = playerTwo
     const position = _.find(AREAS, (slot) => _.inRange(e.locationX, slot.startX, slot.endX) && _.inRange(e.locationY, slot.startY, slot.endY))
@@ -43,12 +40,11 @@ class BoardScreen extends Component {
       this.setState({
         currentPlay,
         isPlayerOne: !isPlayerOne,
-        round: round + 1
       })
       setTimeout(() => {
         this.handleSelectorGameMode()
         this.selectorWinner()
-      }, 500)
+      }, 300)
     }
   }
 
@@ -70,30 +66,24 @@ class BoardScreen extends Component {
       isPlayerOne,
       playerOne,
       playerTwo,
-      round
     } = this.state
     const playerTwoData = playerTwo
     const playHistory = _.concat(playerOne, playerTwo)
     const differencePosition = _.difference(POSITION_SLOT, playHistory)
     const setPosition = _.sample(differencePosition)
     playerTwoData.push(setPosition)
-    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne, round: round + 1 })
+    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne })
   }
 
   smartAI() {
-    const {
-      isPlayerOne,
-      playerOne,
-      playerTwo,
-      round
-    } = this.state
+    const { isPlayerOne, playerOne, playerTwo } = this.state
     const board = POSITION_SLOT
     const playerTwoData = playerTwo
     playerOne.map((pos) => { board[pos] = 'X' })
     playerTwo.map((pos) => { board[pos] = 'O' })
     const bestPosition = this.minimax(board)
     playerTwoData.push(bestPosition.index)
-    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne, round: round + 1 })
+    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne })
   }
 
   emptyIndexies(board) {
@@ -174,32 +164,36 @@ class BoardScreen extends Component {
     if (playHistory.length >= 5) {
       let res = this.isWinner(playerOne)
       if (res && result !== 0) {
-        return this.setState({ result: 0 })
+        return this.setState({ result: 0 }, () => this.renderAlert('Player One Win!'))
       }
       res = this.isWinner(playerTwo)
       if (res && result !== 1) {
-        return this.setState({ result: 1 })
+        return this.setState({ result: 1 }, () => this.renderAlert('Player Two Win!'))
       }
     }
     if (playHistory.length === 9 && result === -1 && result !== 0) {
-      this.setState({ result: 2 })
+      this.setState({ result: 2 }, () => this.renderAlert('Draw'))
     }
   }
 
+  renderAlert(text) {
+    const { navigation } = this.props
+    return (
+      Alert.alert(
+        'Tic Tac Toe',
+        text,
+        [{ text: 'OK', onPress: () => navigation.goBack() }],
+        { cancelable: false },
+      )
+    )
+  }
+
   render() {
-    const {
-      playerTwo,
-      playerOne,
-      round,
-      isPlayerOne,
-      result
-    } = this.state
-    console.log('result', result)
+    const { navigation } = this.props
+    const { playerTwo, playerOne, isPlayerOne } = this.state
+    const mode = JSON.stringify(navigation.getParam('mode'))
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>{round}</Text>
-        <Text>{ isPlayerOne ? 'Player One' : 'Player Two'}</Text>
-        <Text>{result}</Text>
         <Board onDectectPosition={(e) => this.handledDetectPositionSlot(e)}>
           {
             playerOne.map((position, index) => {
@@ -231,9 +225,23 @@ class BoardScreen extends Component {
             })
           }
         </Board>
+        <Card title={`Tic Tac Toe - ${GAME_MODE[mode]}`} containerStyle={{ width: 350 }} >
+          <ButtonGroup
+            selectedIndex={isPlayerOne ? 0 : 1}
+            buttons={['Player One', 'Player Two']}
+            selectedButtonStyle={{ backgroundColor: '#21ba45' }}
+            containerStyle={{ height: 35, marginBottom: 15 }}
+            />
+          <Button title='Back' onPress={() => navigation.goBack()} />
+        </Card>
       </View>
     )
   }
 }
+
+BoardScreen.propTypes = {
+  navigation: PropTypes.object
+}
+
 
 export default BoardScreen

@@ -1,3 +1,6 @@
+
+const GAME_MODE = ['Easy', 'Hard', 'Multiple']
+
 const CONDITIONS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -91,6 +94,7 @@ const AREAS = [
 
 
 export {
+  GAME_MODE,
   POSITION_SLOT,
   AREAS,
   CENTER_POINTS,
