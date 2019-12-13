@@ -43,7 +43,7 @@ class BoardScreen extends Component {
       setTimeout(() => {
         this.selectorGameMode()
         this.selectorWinner()
-      }, 5)
+      }, 300)
     }
   }
 
@@ -108,7 +108,9 @@ class BoardScreen extends Component {
       playerOne,
       round,
       isPlayerOne,
+      result
     } = this.state
+    console.log('result', result)
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>{round}</Text>
