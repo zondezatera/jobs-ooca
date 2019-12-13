@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import _ from 'lodash'
 import { Circle, Cross, Board } from '../../components'
-import { CENTER_POINTS, AREAS } from '../../constant'
+import { POSITION_SLOT, CENTER_POINTS, AREAS } from '../../constant'
 
 class BoardScreen extends Component {
   constructor(props) {
@@ -11,14 +11,18 @@ class BoardScreen extends Component {
       playerOne: [],
       playerTwo: [],
       isPlayerOne: true,
-      gameMode: '',
       round: 0,
       result: ''
     }
   }
 
   handledDetectPositionSlot(e) {
-    const { isPlayerOne, playerOne, playerTwo } = this.state
+    const {
+      isPlayerOne,
+      playerOne,
+      playerTwo,
+      round
+    } = this.state
     const playerOneData = playerOne
     const playerTwoData = playerTwo
     const position = _.find(AREAS, (slot) => _.inRange(e.locationX, slot.startX, slot.endX) && _.inRange(e.locationY, slot.startY, slot.endY))
@@ -30,33 +34,85 @@ class BoardScreen extends Component {
     }
     if (_.intersection(playerOneData, playerTwoData).length === 0) {
       const currentPlay = isPlayerOne ? { playerOne: playerOneData } : { playerTwo: playerTwoData }
-      this.setState({ currentPlay, isPlayerOne: !isPlayerOne })
+      this.setState({ currentPlay, isPlayerOne: !isPlayerOne, round: round + 1 })
+      setTimeout(() => {
+        this.selectorGameMode()
+      }, 5)
     }
   }
 
+  selectorGameMode() {
+    const { navigation } = this.props
+    const gameMode = JSON.stringify(navigation.getParam('mode'))
+    switch (gameMode) {
+      case '0':
+        return this.dumpAI()
+      case '1':
+        return this.smartAI()
+      default:
+        break
+    }
+  }
+
+  dumpAI() {
+    const {
+      isPlayerOne,
+      playerOne,
+      playerTwo,
+      round
+    } = this.state
+    const playerTwoData = playerTwo
+    const playHistory = _.concat(playerOne, playerTwo)
+    const differencePosition = _.difference(POSITION_SLOT, playHistory)
+    const setPosition = _.sample(differencePosition)
+    playerTwoData.push(setPosition)
+    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne, round: round + 1 })
+  }
+
+  smartAI() {
+    console.log('smartAI')
+  }
+
   render() {
-    const { playerTwo, playerOne } = this.state
+    const {
+      playerTwo,
+      playerOne,
+      round,
+      isPlayerOne
+    } = this.state
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>{round}</Text>
+        <Text>{ isPlayerOne ? 'Player One' : 'Player Two'}</Text>
         <Board onDectectPosition={(e) => this.handledDetectPositionSlot(e)}>
           {
-            playerOne.map((position, index) => (
-              <Cross
-                key={index}
-                xTranslate={CENTER_POINTS[position].x}
-                yTranslate={CENTER_POINTS[position].y}
-              />
-            ))
+            playerOne.map((position, index) => {
+              if (CENTER_POINTS[position]) {
+                return (
+                  <Cross
+                    key={index}
+                    xTranslate={CENTER_POINTS[position].x}
+                    yTranslate={CENTER_POINTS[position].y}
+                  />
+                )
+              }
+              return null
+            })
           }
           {
-            playerTwo.map((position, index) => (
-              <Circle
-                key={index}
-                xTranslate={CENTER_POINTS[position].x}
-                yTranslate={CENTER_POINTS[position].y}
-                color='deepskyblue'
-              />
-            ))
+            playerTwo.map((position, index) => {
+              if (CENTER_POINTS[position]) {
+                return (
+                  <Circle
+                    key={index}
+                    xTranslate={CENTER_POINTS[position].x}
+                    yTranslate={CENTER_POINTS[position].y}
+                    color='deepskyblue'
+                  />
+                )
+              }
+              return null
+            })
           }
         </Board>
       </View>

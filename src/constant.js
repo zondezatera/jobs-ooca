@@ -1,3 +1,6 @@
+
+const POSITION_SLOT = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
 const CENTER_POINTS = [
   { x: 10, y: 10 },
   { x: 113, y: 10 },
@@ -10,7 +13,7 @@ const CENTER_POINTS = [
   { x: 213, y: 213 },
 ]
 
-export const AREAS = [
+const AREAS = [
   {
     startX: 3,
     endX: 103,
@@ -78,5 +81,7 @@ export const AREAS = [
 
 
 export {
+  POSITION_SLOT,
+  AREAS,
   CENTER_POINTS
 }
