@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import { View, Text } from 'react-native'
 import _ from 'lodash'
 import { Circle, Cross, Board } from '../../components'
-import { POSITION_SLOT, CENTER_POINTS, AREAS } from '../../constant'
+import {
+  POSITION_SLOT,
+  CENTER_POINTS,
+  AREAS,
+  CONDITIONS
+} from '../../constant'
 
 class BoardScreen extends Component {
   constructor(props) {
@@ -12,7 +17,7 @@ class BoardScreen extends Component {
       playerTwo: [],
       isPlayerOne: true,
       round: 0,
-      result: ''
+      result: -1
     }
   }
 
@@ -37,6 +42,7 @@ class BoardScreen extends Component {
       this.setState({ currentPlay, isPlayerOne: !isPlayerOne, round: round + 1 })
       setTimeout(() => {
         this.selectorGameMode()
+        this.selectorWinner()
       }, 5)
     }
   }
@@ -73,12 +79,35 @@ class BoardScreen extends Component {
     console.log('smartAI')
   }
 
+  //  Handle Winner Logic
+  isWinner(inputs) {
+    return CONDITIONS.some((d) => d.every((item) => inputs.indexOf(item) !== -1))
+  }
+
+  selectorWinner() {
+    const { playerOne, playerTwo, result } = this.state
+    const playHistory = _.concat(playerOne, playerTwo)
+    if (playHistory.length >= 5) {
+      let res = this.isWinner(playerOne)
+      if (res && result !== 0) {
+        return this.setState({ result: 0 })
+      }
+      res = this.isWinner(playerTwo)
+      if (res && result !== 1) {
+        return this.setState({ result: 1 })
+      }
+    }
+    if (playHistory.length === 9 && result === -1 && result !== 0) {
+      this.setState({ result: 2 })
+    }
+  }
+
   render() {
     const {
       playerTwo,
       playerOne,
       round,
-      isPlayerOne
+      isPlayerOne,
     } = this.state
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
