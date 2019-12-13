@@ -26,6 +26,7 @@ class BoardScreen extends Component {
       isPlayerOne,
       playerOne,
       playerTwo,
+      historyLog,
       round
     } = this.state
     const playerOneData = playerOne
@@ -39,15 +40,19 @@ class BoardScreen extends Component {
     }
     if (_.intersection(playerOneData, playerTwoData).length === 0) {
       const currentPlay = isPlayerOne ? { playerOne: playerOneData } : { playerTwo: playerTwoData }
-      this.setState({ currentPlay, isPlayerOne: !isPlayerOne, round: round + 1 })
+      this.setState({
+        currentPlay,
+        isPlayerOne: !isPlayerOne,
+        round: round + 1
+      })
       setTimeout(() => {
-        this.selectorGameMode()
+        this.handleSelectorGameMode()
         this.selectorWinner()
-      }, 300)
+      }, 500)
     }
   }
 
-  selectorGameMode() {
+  handleSelectorGameMode() {
     const { navigation } = this.props
     const gameMode = JSON.stringify(navigation.getParam('mode'))
     switch (gameMode) {
@@ -76,12 +81,91 @@ class BoardScreen extends Component {
   }
 
   smartAI() {
-    console.log('smartAI')
+    const {
+      isPlayerOne,
+      playerOne,
+      playerTwo,
+      round
+    } = this.state
+    const board = POSITION_SLOT
+    const playerTwoData = playerTwo
+    playerOne.map((pos) => { board[pos] = 'X' })
+    playerTwo.map((pos) => { board[pos] = 'O' })
+    const bestPosition = this.minimax(board)
+    playerTwoData.push(bestPosition.index)
+    this.setState({ playerTwo: playerTwoData, isPlayerOne: !isPlayerOne, round: round + 1 })
   }
 
-  //  Handle Winner Logic
-  isWinner(inputs) {
-    return CONDITIONS.some((d) => d.every((item) => inputs.indexOf(item) !== -1))
+  emptyIndexies(board) {
+    return board.filter((s) => s !== 'O' && s !== 'X')
+  }
+
+  winning(board, player) {
+    if (
+      (board[0] === player && board[1] === player && board[2] === player)
+      || (board[3] === player && board[4] === player && board[5] === player)
+      || (board[6] === player && board[7] === player && board[8] === player)
+      || (board[0] === player && board[3] === player && board[6] === player)
+      || (board[1] === player && board[4] === player && board[7] === player)
+      || (board[2] === player && board[5] === player && board[8] === player)
+      || (board[0] === player && board[4] === player && board[8] === player)
+      || (board[2] === player && board[4] === player && board[6] === player)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  minimax(board, playerSet = 'O') {
+    // minimax algo
+    // https://codepen.io/ElaMoscicka/pen/WdRGPB?editors=0010#0
+    const boardPlay = board
+    const availablePosition = this.emptyIndexies(boardPlay)
+    if (this.winning(boardPlay, 'O')) {
+      return { score: -10 }
+    } if (this.winning(boardPlay, 'X')) {
+      return { score: 10 }
+    } if (availablePosition.length === 0) {
+      return { score: 0 }
+    }
+    const moves = []
+    for (let i = 0; i < availablePosition.length; i++) {
+      const move = {}
+      move.index = boardPlay[availablePosition[i]]
+      boardPlay[availablePosition[i]] = playerSet
+      if (playerSet === 'X') {
+        const result = this.minimax(boardPlay, 'O')
+        move.score = result ? result.score : { }
+      } else {
+        const result = this.minimax(boardPlay, 'X')
+        move.score = result ? result.score : { }
+      }
+      boardPlay[availablePosition[i]] = move.index
+      moves.push(move)
+    }
+    let bestMove; let bestScore
+    if (playerSet === 'X') {
+      bestScore = -10000
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i].score > bestScore) {
+          bestScore = moves[i].score
+          bestMove = i
+        }
+      }
+    } else {
+      bestScore = 10000
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i].score < bestScore) {
+          bestScore = moves[i].score
+          bestMove = i
+        }
+      }
+    }
+    return moves[bestMove]
+  }
+
+  isWinner(board) {
+    return CONDITIONS.some((d) => d.every((item) => board.indexOf(item) !== -1))
   }
 
   selectorWinner() {
@@ -115,6 +199,7 @@ class BoardScreen extends Component {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>{round}</Text>
         <Text>{ isPlayerOne ? 'Player One' : 'Player Two'}</Text>
+        <Text>{result}</Text>
         <Board onDectectPosition={(e) => this.handledDetectPositionSlot(e)}>
           {
             playerOne.map((position, index) => {
