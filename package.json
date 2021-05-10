@@ -15,7 +15,7 @@
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-elements": "^1.2.7",
